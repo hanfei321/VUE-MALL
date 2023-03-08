@@ -7,14 +7,19 @@
       <el-breadcrumb-item>分类参数</el-breadcrumb-item>
     </el-breadcrumb>
     <el-card>
-      <el-alert
-        title="注意：只允许为第三级分类设置相关参数"
-        :closable="false"
-        type="warning"
-        show-icon
-      ></el-alert>
-      <el-row>
-        <el-col>
+      <div slot="header" class="clearfix">
+        <transition enter-active-class="animated bounceInRight">
+          <p
+            v-if="titleShow"
+            class="text-2xl leading-0 font-black text-regal-greed"
+          >
+            分类列表
+          </p>
+        </transition>
+      </div>
+
+      <el-row style="margin-top: 20px;">
+        <el-col :span="5">
           <span>选择商品分类：</span>
           <!-- 商品分类的级联选择器 -->
           <el-cascader
@@ -25,15 +30,26 @@
             clearable
           ></el-cascader>
         </el-col>
+        <el-col :span="19">
+          <el-alert
+            title="注意：只允许为第三级分类设置相关参数"
+            :closable="false"
+            type="warning"
+            show-icon
+          ></el-alert
+        ></el-col>
       </el-row>
       <!-- 参数和属性的tab页 -->
-      <el-tabs v-model="activeName" @tab-click="handleTabClick">
+      <el-tabs
+        v-model="activeName"
+        @tab-click="handleTabClick"
+        style="margin-top: 15px;"
+      >
         <el-tab-pane label="动态参数" name="many">
           <el-button
             type="primary"
             :disabled="isBtnDisabled"
             @click="openAddView"
-            
             >添加动态参数</el-button
           >
           <!-- 动态参数的数据表格 -->
@@ -77,14 +93,12 @@
                   icon="el-icon-edit"
                   type="primary"
                   @click="paramsEdit(scope.row)"
-                  
                   >编辑</el-button
                 >
                 <el-button
                   icon="el-icon-delete"
                   type="danger"
                   @click="paramsDel(scope.row)"
-                  
                   >删除</el-button
                 >
               </template>
@@ -96,7 +110,6 @@
             type="primary"
             :disabled="isBtnDisabled"
             @click="openAddView"
-            
             >添加静态属性</el-button
           >
           <el-table :data="onlyTabData" border stripe style="width: 100%">
@@ -136,14 +149,12 @@
                   icon="el-icon-edit"
                   type="primary"
                   @click="paramsEdit(scope.row)"
-                  
                   >编辑</el-button
                 >
                 <el-button
                   icon="el-icon-delete"
                   type="danger"
                   @click="paramsDel(scope.row)"
-                  
                   >删除</el-button
                 >
               </template>
@@ -152,6 +163,7 @@
         </el-tab-pane>
       </el-tabs>
     </el-card>
+
     <!-- 添加参数 -->
     <el-dialog
       :title="'添加' + tabName"
@@ -204,22 +216,23 @@ import {
   addParam,
   delParam,
   queryParamById,
-  editParam
-} from '../../api/goods'
+  editParam,
+} from '../../api/goods';
 export default {
   name: 'Params',
   data() {
     return {
       /* 商品分类数据 */
       cataList: [],
+      titleShow: false,
       /* 级联选择器配置 */
       cascaderProps: {
         value: 'cat_id',
         label: 'cat_name',
-        children: 'children'
+        children: 'children',
       },
       /* 级联选择器的值 */
-      selectedKeys: [],
+      selectedKeys: [1, 3, 6],
       /* 当前tab */
       activeName: 'many',
       /* 动态参数 */
@@ -230,10 +243,10 @@ export default {
       dialogVisibleAdd: false,
       /* 添加对话框表单的数据 */
       addForm: {
-        attr_name: ''
+        attr_name: '',
       },
       addRules: {
-        attr_name: [{ required: true, message: '请输入名称', trigger: 'blur' }]
+        attr_name: [{ required: true, message: '请输入名称', trigger: 'blur' }],
       },
       /* 编辑参数或属性对话框的状态 */
       dialogVisibleEdit: false,
@@ -242,130 +255,134 @@ export default {
         attr_id: 0,
         cat_id: 0,
         attr_sel: '',
-        attr_name: ''
+        attr_name: '',
       },
       editRules: {
-        attr_name: [{ required: true, message: '请输入名称', trigger: 'blur' }]
-      }
-    }
+        attr_name: [{ required: true, message: '请输入名称', trigger: 'blur' }],
+      },
+    };
   },
   created() {
-    this.getCateList()
+    setTimeout(() => {
+      this.titleShow = true;
+    }, 10);
+    this.getCateList();
+    this.getParamsList();
   },
   computed: {
     /* 添加属性/参数按钮的开启状态 */
     isBtnDisabled() {
-      return this.selectedKeys.length === 3 ? false : true
+      return this.selectedKeys.length === 3 ? false : true;
     },
     /* 级联选择器选中分类的ID */
     cateId() {
-      return this.selectedKeys.length === 3 ? this.selectedKeys[2] : null
+      return this.selectedKeys.length === 3 ? this.selectedKeys[2] : null;
     },
     /* 当前tab页 */
     tabName() {
-      return this.activeName === 'many' ? '动态参数' : '静态属性'
-    }
+      return this.activeName === 'many' ? '动态参数' : '静态属性';
+    },
   },
   methods: {
     /* 获取商品列表 */
     async getCateList() {
-      const { data: res } = await getCataList({})
+      const { data: res } = await getCataList({});
       if (res.meta.status !== 200)
-        return this.$message.error('获取商品列表失败')
-      this.cataList = res.data
+        return this.$message.error('获取商品列表失败');
+      this.cataList = res.data;
     },
     /* 级联选择器change事件 */
     CateChange() {
       if (this.cateId == null) {
-        this.selectedKeys = []
-        return
+        this.selectedKeys = [];
+        return;
       }
-      this.getParamsList()
+      this.getParamsList();
     },
     /* 切换tab页 */
     handleTabClick() {
       if (this.cateId != null) {
-        this.getParamsList()
+        this.getParamsList();
       }
     },
     /* 获取参数/属性信息 */
     async getParamsList() {
       /* 根据当前tab页查询对应数据 */
-      const { data: res } = await getParamsList(this.cateId, this.activeName)
+      const { data: res } = await getParamsList(this.cateId, this.activeName);
       if (res.meta.status !== 200)
-        return this.$message.error(`获取${this.tabName}失败`)
-      this.$message.success(`获取${this.tabName}成功`)
+        return this.$message.error(`获取${this.tabName}失败`);
+      this.$message.success(`获取${this.tabName}成功`);
       console.log(res.data);
       res.data.forEach((item) => {
-        item.inputVisible = false
-        item.inputValue = ''
-        item.attr_vals = item.attr_vals ? item.attr_vals.split(',') : []
-      })
+        item.inputVisible = false;
+        item.inputValue = '';
+        item.attr_vals = item.attr_vals ? item.attr_vals.split(',') : [];
+      });
 
       if (this.activeName == 'many') {
-        this.manyTabData = res.data
+        this.manyTabData = res.data;
       } else {
-        this.onlyTabData = res.data
+        this.onlyTabData = res.data;
       }
     },
     /* 添加参数按钮的回调 */
     openAddView() {
-      this.dialogVisibleAdd = true
+      this.dialogVisibleAdd = true;
     },
     /* 添加参数提交的回调 */
     handleAddParam() {
       this.$refs.addForm.validate(async (valid) => {
-        if (!valid) return
+        if (!valid) return;
         const { data: res } = await addParam(
           this.cateId,
           this.addForm.attr_name,
           this.activeName
-        )
-        if (res.meta.status !== 201) return this.$message.error('添加失败')
-        this.$message.success('添加成功')
-        this.getParamsList()
-        this.dialogVisibleAdd = false
-      })
+        );
+        if (res.meta.status !== 201) return this.$message.error('添加失败');
+        this.$message.success('添加成功');
+        this.getParamsList();
+        this.dialogVisibleAdd = false;
+      });
     },
 
     /* 添加tag的回调 */
     showInput(row) {
-      row.inputVisible = true
+      row.inputVisible = true;
       this.$nextTick(() => {
-        this.$refs.saveTagInput.$refs.input.focus()
-      })
+        this.$refs.saveTagInput.$refs.input.focus();
+      });
     },
     /* 添加标签的输入框失去焦点或回车的回调 */
     handleInputConfirm(row) {
-      let inputValue = row.inputValue
+      let inputValue = row.inputValue;
       if (inputValue.trim()) {
-        row.attr_vals.push(inputValue)
+        row.attr_vals.push(inputValue);
       }
-      row.inputVisible = false
-      row.inputValue = ''
+      row.inputVisible = false;
+      row.inputValue = '';
     },
     /* 编辑按钮回调 */
     async paramsEdit(row) {
-      const { data: res } = await queryParamById(row.cat_id, row.attr_id)
-      if (res.meta.status !== 200) this.$message.error('获取失败')
-      this.editForm = res.data
-      this.dialogVisibleEdit = true
+      const { data: res } = await queryParamById(row.cat_id, row.attr_id);
+      if (res.meta.status !== 200) this.$message.error('获取失败');
+      this.editForm = res.data;
+      this.dialogVisibleEdit = true;
     },
     /* 编辑提交回调 */
     editParamSub() {
       this.$refs.editForm.validate(async (valid) => {
-        if (!valid) return
+        if (!valid) return;
         const { data: res } = await editParam(
           this.editForm.cat_id,
           this.editForm.attr_id,
           this.editForm.attr_name,
           this.editForm.attr_sel
-        )
-        if (res.meta.status !== 200) return this.$message.error('更新失败')
-        this.$message.success('更新成功')
-        this.getParamsList()
-        this.dialogVisibleEdit = false
-      })
+        );
+        if (res.meta.status !== 200) return this.$message.error('更新失败');
+        this.$message.success('更新成功');
+        this.getParamsList();
+        this.dialogVisibleEdit = false;
+      });
     },
     /* 删除按钮回调，删除参数/属性 */
     async paramsDel(row) {
@@ -375,17 +392,17 @@ export default {
         {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
-          type: 'warning'
+          type: 'warning',
         }
-      ).catch((err) => err)
+      ).catch((err) => err);
 
-      if (result !== 'confirm') return this.$message.info('取消删除')
-      const { data: res } = await delParam(row.cat_id, row.attr_id)
-      if (res.meta.status !== 200) return this.$message.error('删除失败')
-      this.getParamsList()
-    }
-  }
-}
+      if (result !== 'confirm') return this.$message.info('取消删除');
+      const { data: res } = await delParam(row.cat_id, row.attr_id);
+      if (res.meta.status !== 200) return this.$message.error('删除失败');
+      this.getParamsList();
+    },
+  },
+};
 </script>
 
 <style lang="less" scoped>

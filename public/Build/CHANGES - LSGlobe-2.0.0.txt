@@ -1,0 +1,206 @@
+﻿Change Log
+==========
+
+### 2.0.0.563 - 2021-06-21
+
+* 解决影像依附倾斜模型显示不正确的问题。
+* 优化点云的拾取
+
+* EditBoxGeometry-1.0.9
+	* 解决模型编辑再次加载时旋转、缩放数值错误的问题
+
+* WallDynamicMaterialProperty-1.0.2
+	* 优化墙面贴图的效果
+	* 实现动态墙指定纹理宽高(单位米)
+
+* VectorEditor-1.0.6
+	* 线面编辑添加撤消接口
+	* 支持设置牵引线材质
+
+* WallEditor-1.0.0
+	* 添加墙编辑插件
+
+
+### 2.0.0.555 - 2021-06-05
+
+* 解决影像图层比较多的时候开启阴影崩溃的问题。
+
+* EditBoxGeometry-1.0.8
+	* 统一模型旋转规则。
+
+* PolylineDynamicMaterialProperty-1.0.2
+	* 优化流动线接口。
+
+
+### 2.0.0.552 - 2021-05-15
+
+* 解决lob中含有中文路径时解析错误的问题。
+
+* PolylineDynamicMaterialProperty-1.0.1
+	* 优化流动线的效果，实现贴图的像素大小不变。
+
+* EditBoxGeometry-1.0.7
+	* 统一模型缩放规则。
+
+
+### 2.0.0.548 - 2021-04-14
+
+* 添加错误事件接口。
+
+* TDTTerrainProvider-1.0.1
+	* 添加destroy函数。
+
+
+### 2.0.0.545 - 2021-02-24
+
+* 解决依地依模型的面的顶点高度都变为0的问题。
+
+* TDTTerrainProvider-1.0.0
+	* 支持加载天地图发布的地形数据。
+
+
+### 2.0.0.541 - 2020-12-24
+
+* 合并Cesium-1.75的代码。
+
+* WallDynamicMaterialProperty-1.0.0
+	* 增加墙面动态特效插件。
+	
+* ScanningEffectMaterialProperty-1.0.0
+	* 增加扫描线特效插件。
+	
+* PolylineDynamicMaterialProperty-1.0.0
+	* 增加流动线特效插件。
+
+* TextureDynamicMaterialProperty-1.0.0
+	* 增加图片旋转特效插件。
+
+* TowerGlow-1.0.0
+	* 增加发光塔特效插件。
+
+* ModelShaderFactory-1.0.0
+	* 增加3DTiles特效插件。
+
+补充说明：http://doc.wish3d.com/products/files/doceditor.aspx?fileid=5974&doc=TFo0ZUN5eDBnWDZqdk1paVVHY1dtbkZTV2FZcVZJV2dLOE1YYTdXYzBtdz0_IjU5NzQi0
+
+
+### 1.6.0.530 - 2020-12-11
+
+* 修改崩溃提示信息。
+* 兼容以前场景文件。
+* 解决频繁调用模型编辑接口时平移操作错误的问题。
+
+* ViewshedAnalysis-1.0.1
+	* 解决可视域分析漫游时闪烁的问题。
+	
+* EditBoxGeometry-1.0.6
+	* 解决lmz旋转错误的问题。
+
+
+### 1.6.0.523 - 2020-10-14
+
+* 实现瓦片层级小于影像图层最小层级时不显示数据。
+* 实现瓦片层级大于矢量瓦片点图层最大层级时不显示数据。
+* 解决Cesium3DTiles模型中含有KHR_technique_webgl扩展无法加载的问题。
+* 解决三角测量时有文字被线遮挡住的问题。
+* 把类成员_type改为只读属性type。
+
+* VectorTileProvider-1.0.14
+	* 矢量瓦片图层支持设置层级范围。
+	* 大矢量地标的高度支持从属性字段-ELEVATION中读取。
+	* 修改矢量瓦片样式从json中读取错误的问题。
+	
+* EditBoxGeometry-1.0.5
+	* 通过延时拾取优化模型编辑性能。
+	* 统一Cesium3DTiles数据编辑的实现。
+
+
+### 1.6.0.513 - 2020-09-04
+
+* 解决DP-Modeler导出的倾斜模型预览崩溃的问题。
+* 解决距离测量时文字被线挡住的问题。
+* 解决含有投影的倾斜模型移动时包围盒错位的问题。
+* 解决图层加载失败后保存场景报错的问题。
+* 解决场景初始化时添加错误地形图层后不显示地球的问题。
+* 解决加载含有图片数据的gltf崩溃的问题。
+* VectorTileProvider-1.0.11
+	* 解决shp点生成矢量瓦片后点位置不准确的问题。
+	* 矢量瓦片点数据支持设置图标的锚点位置和文字的相对位置。
+	* 解决矢量瓦片点显示指定字段值不是字符时崩溃的问题。
+* VectorEditor-1.0.5
+    * 矢量编辑对图层增加开关控制，默认不支持编辑。
+	
+补充说明：http://doc.wish3d.com/products/files/doceditor.aspx?fileid=5832&doc=bFIzNDZzRDVDRlkwamhWTUljN2dROXZVSWFYN1ZWb0lPeXdRdm9BUHJTUT0_IjU4MzIi0
+
+
+### 1.6.0.500 - 2020-08-07
+
+* 优化获取指定地理坐标处地形高度的性能，此优化只对高度图地形有效。
+* 图层加载支持用户传入多域名。
+* 修改有投影的倾斜模型移动位置后显示错误的问题。
+
+
+### 1.6.0.493 - 2020-07-01
+
+* 修改倾斜模型压平流程，压平面添加到pageLODCollection中。
+* TextMaterialProperty-1.0.0
+	* 添加文字贴图材质插件。
+
+* 更换image-error图片。
+
+补充说明：http://doc.wish3d.com/products/files/doceditor.aspx?fileid=5682&doc=cExDMkdzU0QvN0gxVkxFcEljN1p0MGR6NlhPdTVJSHdqWklyZko0SEtnTT0_IjU2ODIi0
+
+
+### 1.6.0.488 - 2020-06-02
+
+* 调整方量分析接口与场景绑定。
+* 倾斜模型转换支持字符串类型的投影。
+* Water-1.0.1
+	* 水面添加控制开启倒影的接口。
+
+* 解决飞行过程中崩溃问题。
+
+补充说明：http://doc.wish3d.com/products/files/doceditor.aspx?fileid=5649&doc=Z2gydnFOSktmTUppdThDR3VDYlZIbitQK3dmNjBFMTQ2bXcrZ2Y4N1h0cz0_IjU2NDki0
+
+
+### 1.6.0.483 - 2020-05-08
+
+* 增加倾斜数据在当前视角是否加载完成的属性及事件。
+* SkyLineAnalysis-1.0.0
+	* 添加天际线分析插件。
+
+* 解决倾斜模型设置多域名不起作用的问题。
+* 解决倾斜模型中没有顶点的数据导致的崩溃问题。
+* 解决倾斜模型层级切换时闪烁的问题。
+* 解决LSGlobe3DTiles无法拾取的问题。
+* VectorEditor-1.0.4
+	* 修复切换选择Marker对象时移动图标不正确切换的问题。#8061
+
+补充说明：http://doc.wish3d.com/products/files/doceditor.aspx?fileid=5622&doc=VjdKaGRNenA3a1duTDdWT1d1Y2FyWS9jNE16M2JjcHdTZ1cvYU8rVWhiWT0_IjU2MjIi0
+
+
+### 1.6.0.469 - 2019-12-04
+
+* EditBoxGeometry-1.0.1
+    * 提供接口，返回编辑对象包围盒底面高度;
+    * 编辑对象的最低高度从-1000改成-10000.
+* VectorEditor-1.0.3
+    * 实现点编辑功能.
+* 删除老版本的点编辑插件.
+* 解决倾斜模型默认纹理未加载完时运行时崩溃的问题. 
+* 修改可能引起“Invalid array length“崩溃的问题. 
+补充说明：http://doc.wish3d.com/products/files/doceditor.aspx?fileid=5492&doc=c0NORnAxeHBzaXhPQXNLc1NtYnp3Sk1EakdyQkM0cTZaWkQvcCtldndDND0_IjU0OTIi0
+
+
+### 1.6.0.453 - 2019-10-21
+
+* 实现配置文件和数据内容分开存储的相关修改.
+* 增加token访问机制. 
+* 支持含有mipmap信息的crn格式纹理. 
+* 实现优先请求地形、影像的数据.
+
+
+### 1.6.0.448 - 2019-08-28
+
+* Initial Release.
+

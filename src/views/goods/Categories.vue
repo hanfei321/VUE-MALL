@@ -7,13 +7,19 @@
       <el-breadcrumb-item>商品分类</el-breadcrumb-item>
     </el-breadcrumb>
     <el-card>
-      <el-row>
-        <el-col>
-          <el-button type="primary" @click="showAddCateView"
-            >添加商品分类</el-button
-          >
-        </el-col>
-      </el-row>
+      <div slot="header" class="clearfix">
+        <span style="font-size: 22px; color: #5e843c; font-weight: 800;"
+          >商品分类</span
+        >
+        <el-button
+          type="primary"
+          @click="showAddCateView"
+          style="float: right; margin-right: 10px;"
+          round
+          >添加商品分类</el-button
+        >
+      </div>
+
       <!-- 分类树形表格区域 -->
       <zk-table
         :show-row-hover="false"
@@ -37,21 +43,24 @@
         </template>
         <!-- 列表级别列 -->
         <template v-slot:order="scope">
-          <el-tag  v-if="scope.row.cat_level === 0">一级</el-tag>
-          <el-tag
-            type="success"
-            
-            v-else-if="scope.row.cat_level === 1"
+          <el-tag v-if="scope.row.cat_level === 0">一级</el-tag>
+          <el-tag type="success" v-else-if="scope.row.cat_level === 1"
             >二级</el-tag
           >
-          <el-tag type="warning"  v-else>三级</el-tag>
+          <el-tag type="warning" v-else>三级</el-tag>
         </template>
         <!-- 操作列 -->
         <template v-slot:option="scope">
-          <el-button type="primary"  @click="handleEdit(scope.row)"
+          <el-button
+            type="text"
+            style="color: #4caf50;"
+            @click="handleEdit(scope.row)"
             >编辑</el-button
           >
-          <el-button type="danger"  @click="handleDelete(scope.row)"
+          <el-button
+            type="text"
+            style="color: #f44336;"
+            @click="handleDelete(scope.row)"
             >删除</el-button
           >
         </template>
@@ -133,8 +142,8 @@ import {
   addCate,
   deleteCate,
   queryCateById,
-  editCate
-} from '../../api/goods'
+  editCate,
+} from '../../api/goods';
 export default {
   name: 'Categories',
   data() {
@@ -145,42 +154,42 @@ export default {
       queryInfo: {
         type: 3,
         pagenum: 1,
-        pagesize: 5
+        pagesize: 5,
       },
       total: 0,
       /* 树形表格的列配置 */
       columns: [
         {
           label: '分类名称',
-          prop: 'cat_name'
+          prop: 'cat_name',
         },
         {
           label: '是否有效',
           type: 'template',
-          template: 'isOk'
+          template: 'isOk',
         },
         {
           label: '排序',
           type: 'template',
-          template: 'order'
+          template: 'order',
         },
         {
           label: '操作',
           type: 'template',
-          template: 'option'
-        }
+          template: 'option',
+        },
       ],
       /* 添加分类对话框的状态及数据 */
       dialogVisibleAdd: false,
       addCateForm: {
         cat_name: '',
         cat_pid: 0,
-        cat_level: 0
+        cat_level: 0,
       },
       addCateFormRules: {
         cat_name: [
-          { required: true, message: '请输入分类名称', trigger: 'blur' }
-        ]
+          { required: true, message: '请输入分类名称', trigger: 'blur' },
+        ],
       },
       /* 添加分类对话框的父级分类数据 */
       parentCateList: [],
@@ -190,7 +199,7 @@ export default {
         label: 'cat_name',
         value: 'cat_id',
         children: 'children',
-        checkStrictly: true
+        checkStrictly: true,
       },
       /* 添加时选择的分类 */
       selectedKeys: [],
@@ -198,83 +207,83 @@ export default {
       dialogVisibleEdit: false,
       editCateForm: {
         cat_name: '',
-        cat_pid: 0
+        cat_pid: 0,
       },
       editCateFormRules: {
         cat_name: [
-          { required: true, message: '请输入分类名称', trigger: 'blur' }
-        ]
-      }
-    }
+          { required: true, message: '请输入分类名称', trigger: 'blur' },
+        ],
+      },
+    };
   },
   created() {
-    this.getCatasList()
+    this.getCatasList();
   },
   methods: {
     /* 请求商品列表数据 */
     async getCatasList() {
-      const { data: res } = await getCataList(this.queryInfo)
+      const { data: res } = await getCataList(this.queryInfo);
       if (res.meta.status !== 200)
-        return this.$message.error('获取商品列表失败')
-      this.cataList = res.data.result
-      this.total = res.data.total
+        return this.$message.error('获取商品列表失败');
+      this.cataList = res.data.result;
+      this.total = res.data.total;
     },
     /* 分页大小变化的回调 */
     handleSizeChange(newVal) {
-      this.queryInfo.pagesize = newVal
-      this.getCatasList()
+      this.queryInfo.pagesize = newVal;
+      this.getCatasList();
     },
     /* 当前页变化的回调 */
     handleCurrentChange(newVal) {
-      this.queryInfo.pagenum = newVal
-      this.getCatasList()
+      this.queryInfo.pagenum = newVal;
+      this.getCatasList();
     },
     /* 添加分类按钮的回调，打开对话框 */
     showAddCateView() {
-      this.getParentCateList()
-      this.dialogVisibleAdd = true
+      this.getParentCateList();
+      this.dialogVisibleAdd = true;
     },
     /* 添加对话框打开时，获取父级分类 */
     async getParentCateList() {
-      addCate
-      const { data: res } = await getCataList({ type: 2 })
+      addCate;
+      const { data: res } = await getCataList({ type: 2 });
       if (res.meta.status1 == 200)
-        return this.$message.error('获取父级列表失败')
-      this.parentCateList = res.data
+        return this.$message.error('获取父级列表失败');
+      this.parentCateList = res.data;
     },
     /* 级联选择器数据变化的回调 */
     parentCateChange() {
-      console.log(this.selectedKeys)
+      console.log(this.selectedKeys);
       if (this.selectedKeys.length > 0) {
-        let len = this.selectedKeys.length
-        this.addCateForm.cat_pid = this.selectedKeys[len - 1]
-        this.addCateForm.cat_level = len
+        let len = this.selectedKeys.length;
+        this.addCateForm.cat_pid = this.selectedKeys[len - 1];
+        this.addCateForm.cat_level = len;
       } else {
-        this.addCateForm.cat_pid = 0
-        this.addCateForm.cat_level = 0
+        this.addCateForm.cat_pid = 0;
+        this.addCateForm.cat_level = 0;
       }
     },
     /* 添加对话框确认按钮的回调 */
     addCate() {
       this.$refs.addCateForm.validate(async (valid) => {
-        if (!valid) return
-        const { data: res } = await addCate(this.addCateForm)
-        if (res.meta.status !== 201) return this.$message.error('添加失败')
-        this.$message.success('添加成功')
-        this.dialogVisibleAdd = false
-        this.getCatasList()
-      })
+        if (!valid) return;
+        const { data: res } = await addCate(this.addCateForm);
+        if (res.meta.status !== 201) return this.$message.error('添加失败');
+        this.$message.success('添加成功');
+        this.dialogVisibleAdd = false;
+        this.getCatasList();
+      });
     },
     /* 清除表单验证 */
     resetform(formName) {
-      this.$refs[formName].resetFields()
+      this.$refs[formName].resetFields();
     },
     /* 关闭添加对话框的回调 */
     resetAddform() {
-      this.resetform('addCateForm')
-      this.selectedKeys = []
-      this.addCateForm.cat_pid = 0
-      this.addCateForm.cat_level = 0
+      this.resetform('addCateForm');
+      this.selectedKeys = [];
+      this.addCateForm.cat_pid = 0;
+      this.addCateForm.cat_level = 0;
     },
     /* 删除分类按钮的回调 */
     async handleDelete(obj) {
@@ -284,41 +293,41 @@ export default {
         {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
-          type: 'warning'
+          type: 'warning',
         }
-      ).catch((err) => err)
+      ).catch((err) => err);
 
-      if (result !== 'confirm') return this.$message.info('取消删除')
-      const { data: res } = await deleteCate(obj.cat_id)
-      if (res.meta.status !== 200) return this.$message.error('删除失败')
-      this.$message.success('删除' + obj.cat_name + '成功')
-      this.getCatasList()
+      if (result !== 'confirm') return this.$message.info('取消删除');
+      const { data: res } = await deleteCate(obj.cat_id);
+      if (res.meta.status !== 200) return this.$message.error('删除失败');
+      this.$message.success('删除' + obj.cat_name + '成功');
+      this.getCatasList();
     },
     /* 编辑按钮的回调，打开对话框，并获取数据 */
     async handleEdit(obj) {
-      const { data: res } = await queryCateById(obj.cat_id)
+      const { data: res } = await queryCateById(obj.cat_id);
       if (res.meta.status !== 200)
-        return this.$message.error('获取编辑信息失败')
-      this.editCateForm = res.data
-      this.dialogVisibleEdit = true
+        return this.$message.error('获取编辑信息失败');
+      this.editCateForm = res.data;
+      this.dialogVisibleEdit = true;
     },
     /* 编辑对话框确认按钮的回调 */
     async editCateSub() {
       const { data: res } = await editCate(
         this.editCateForm.cat_id,
         this.editCateForm.cat_name
-      )
-      if (res.meta.status !== 200) return this.$message.error('更新失败')
-      this.getCatasList()
-      this.dialogVisibleEdit = false
-    }
-  }
-}
+      );
+      if (res.meta.status !== 200) return this.$message.error('更新失败');
+      this.getCatasList();
+      this.dialogVisibleEdit = false;
+    },
+  },
+};
 </script>
 
 <style lang="less" scoped>
 .treeTable {
-  margin-top: 10px;
+  margin: 20px 0px;
 }
 .el-cascader {
   width: 100%;

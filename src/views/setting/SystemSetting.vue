@@ -16,12 +16,27 @@
         <el-form-item label="收起导航菜单">
           <el-switch v-model="form.isCollapse"></el-switch>
         </el-form-item>
-        <el-form-item label="主页显示疫情地图">
+        <el-form-item label="主页显示地图">
           <el-switch v-model="form.showMap"></el-switch>
         </el-form-item>
+        <el-form-item label="">
+          <template>
+            <el-tooltip
+              :disabled="disabled"
+              content="点击关闭 tooltip 功能"
+              placement="bottom"
+              effect="light"
+            >
+              <el-button @click="toolBtnClick"
+                >点击{{ disabled ? '开启' : '关闭' }} tooltip 功能</el-button
+              >
+            </el-tooltip>
+          </template>
+        </el-form-item>
 
-        <el-form-item>
+        <el-form-item style="display: flex; justify-content:flex-end;">
           <el-button type="primary" @click="onSubmit">保存并应用</el-button>
+          <el-button type="primary" @click="$router.go(-1)">回退</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -35,32 +50,36 @@ export default {
       form: {
         eleSize: '',
         isCollapse: false,
-        showMap: true
-      }
-    }
+        showMap: true,
+      },
+      disabled: false,
+    };
   },
   created() {
-    this.init()
+    this.init();
   },
   methods: {
+    toolBtnClick() {
+      this.disabled = !this.disabled;
+      this.$store.state.tooltipOpen = this.disabled;
+    },
     init() {
       this.form.eleSize = localStorage.getItem('eleSize')
         ? localStorage.getItem('eleSize')
-        : 'medium'
+        : 'medium';
       this.form.isCollapse =
-        localStorage.getItem('isCollapse') === 'true' ? true : false
+        localStorage.getItem('isCollapse') === 'true' ? true : false;
       this.form.showMap =
-        localStorage.getItem('showMap') === 'false' ? false : true
+        localStorage.getItem('showMap') === 'false' ? false : true;
     },
     onSubmit() {
-      localStorage.setItem('eleSize', this.form.eleSize)
-      localStorage.setItem('isCollapse', this.form.isCollapse)
-      localStorage.setItem('showMap', this.form.showMap)
-      window.location.reload()
-    }
-  }
-}
+      localStorage.setItem('eleSize', this.form.eleSize);
+      localStorage.setItem('isCollapse', this.form.isCollapse);
+      localStorage.setItem('showMap', this.form.showMap);
+      window.location.reload();
+    },
+  },
+};
 </script>
 
-<style>
-</style>
+<style></style>

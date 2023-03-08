@@ -5,7 +5,9 @@
         <img src="../assets/login.png" alt="" />
       </div>
       <div class="form-wrap">
-        <h2>后台管理</h2>
+        <h2 style="font-size: 22px; font-weight: bold; line-height: 44px;">
+          后台管理系统
+        </h2>
         <el-form
           :model="ruleForm"
           status-icon
@@ -81,51 +83,52 @@
 </template>
 
 <script>
-import { doLogin } from '../api/user'
+import { doLogin } from '../api/user';
 export default {
   name: 'Login',
   data() {
     return {
       ruleForm: {
         username: '',
-        password: ''
+        password: '',
       },
       /* 校验规则 */
       rules: {
         username: [{ required: true, message: '请输入账号', trigger: 'blur' }],
-        password: [{ required: true, message: '请输入密码', trigger: 'blur' }]
-      }
-    }
+        password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
+      },
+    };
   },
   created() {
-    this.ruleForm.username = 'admin'
-    this.ruleForm.password = '123456'
+    this.ruleForm.username = 'admin';
+    this.ruleForm.password = '123456';
   },
   methods: {
     login(formName) {
       this.$refs[formName].validate(async (valid) => {
         if (valid) {
           await doLogin(this.ruleForm).then((res) => {
-            console.log(res)
-            const data = res.data
-            if (data.meta.status !== 200) return this.$message.error('登陆失败')
+            console.log(res);
+            const data = res.data;
+            if (data.meta.status !== 200)
+              return this.$message.error('登陆失败');
             this.$message({
               message: '登陆成功',
-              type: 'success'
-            })
-            sessionStorage.setItem('userName',this.ruleForm.username)
-            sessionStorage.setItem('token', data.data.token)
-            this.$router.push('/home')
-          })
-          console.log('222')
+              type: 'success',
+            });
+            sessionStorage.setItem('userName', this.ruleForm.username);
+            sessionStorage.setItem('token', data.data.token);
+            this.$router.push('/home');
+          });
+          console.log('222');
         } else {
-          console.log('error submit!!')
-          return false
+          console.log('error submit!!');
+          return false;
         }
-      })
-    }
-  }
-}
+      });
+    },
+  },
+};
 </script>
 
 <style lang="less" scoped>
@@ -160,19 +163,19 @@ export default {
     }
     .form-wrap {
       box-sizing: border-box;
-      padding-top: 50px;
-      width: 320px;
+      padding-top: 90px;
+      width: 300px;
       text-align: center;
       .login-form {
         width: 280px;
         margin: 0 auto;
       }
-      .icon-wrap{
+      .icon-wrap {
         display: flex;
         width: 200px;
         margin: 0 auto;
         justify-content: space-around;
-        &-item{
+        &-item {
           font-size: 20px;
           cursor: pointer;
         }

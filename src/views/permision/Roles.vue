@@ -6,13 +6,17 @@
       <el-breadcrumb-item>角色列表</el-breadcrumb-item>
     </el-breadcrumb>
     <el-card>
-      <el-row>
-        <el-col :span="2">
-          <el-button type="primary" @click="addRoleDialogVisible = true">
-            添加角色
-          </el-button>
-        </el-col>
-      </el-row>
+      <div slot="header" class="clearfix">
+        <span style="color: #5e843c; font-weight: 800;">角色列表</span>
+        <el-button
+          style="float: right; margin-right: 10px;"
+          type="primary"
+          @click="addRoleDialogVisible = true"
+          round
+        >
+          添加角色
+        </el-button>
+      </div>
       <el-table :data="rolesList" style="width: 100%" border stripe>
         <el-table-column type="expand">
           <template v-slot="scope">
@@ -71,13 +75,22 @@
           <!-- 行操作 -->
           <template v-slot="scope">
             <div>
-              <el-button type="primary" @click="editRole(scope.row.id)"
+              <el-button
+                type="text"
+                style="color: #4caf50;"
+                @click="editRole(scope.row.id)"
                 >编辑</el-button
               >
-              <el-button type="danger" @click="delRole(scope.row.id)"
+              <el-button
+                type="text"
+                style="color: #f44336;"
+                @click="delRole(scope.row.id)"
                 >删除</el-button
               >
-              <el-button type="warning" @click="openSetRightsView(scope.row)"
+              <el-button
+                type="text"
+                style="color: #00bcd4;"
+                @click="openSetRightsView(scope.row)"
                 >分配权限</el-button
               >
             </div>
@@ -189,8 +202,8 @@ import {
   addRole,
   getRoleById,
   editRole,
-  deleteRole
-} from '../../api/role'
+  deleteRole,
+} from '../../api/role';
 export default {
   name: 'Roles',
   data() {
@@ -204,7 +217,7 @@ export default {
       /* 树形控件需要的配置 */
       defaultProps: {
         children: 'children',
-        label: 'authName'
+        label: 'authName',
       },
       /* 分配权限列表中该角色拥有的权限  */
       defaultCheckedKeys: [],
@@ -213,40 +226,40 @@ export default {
       addRoleDialogVisible: false,
       addRoleForm: {
         roleName: '',
-        roleDesc: ''
+        roleDesc: '',
       },
       addRoleFormRules: {
         roleName: [
-          { required: true, message: '请输入角色名', trigger: 'blur' }
+          { required: true, message: '请输入角色名', trigger: 'blur' },
         ],
         roleDesc: [
-          { required: true, message: '请输入角色描述', trigger: 'blur' }
-        ]
+          { required: true, message: '请输入角色描述', trigger: 'blur' },
+        ],
       },
       /* 编辑角色相关的数据以及状态 */
       editRoleDialogVisible: false,
       editRoleForm: {
         roleId: '',
         roleName: '',
-        roleDesc: ''
+        roleDesc: '',
       },
       editRoleFormRules: {
         roleName: [
-          { required: true, message: '请输入角色名', trigger: 'blur' }
+          { required: true, message: '请输入角色名', trigger: 'blur' },
         ],
         roleDesc: [
-          { required: true, message: '请输入角色描述', trigger: 'blur' }
-        ]
-      }
-    }
+          { required: true, message: '请输入角色描述', trigger: 'blur' },
+        ],
+      },
+    };
   },
   methods: {
     /* 获取角色列表，包括该角色的一二三级权限列表 */
     async getRolesList() {
-      const { data: res } = await getRoles()
-      if (res.meta.status !== 200) return this.$message.error('获取角色失败')
-      this.rolesList = res.data
-      this.$message.success('获取角色列表成功')
+      const { data: res } = await getRoles();
+      if (res.meta.status !== 200) return this.$message.error('获取角色失败');
+      this.rolesList = res.data;
+      this.$message.success('获取角色列表成功');
     },
     /* 移除某一角色的某一权限，标签关闭的回调 */
     async removePermi(role, rightId) {
@@ -256,40 +269,40 @@ export default {
         {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
-          type: 'warning'
+          type: 'warning',
         }
-      ).catch((err) => err)
+      ).catch((err) => err);
 
-      if (result !== 'confirm') return this.$message.info('取消删除')
+      if (result !== 'confirm') return this.$message.info('取消删除');
 
-      const { data: res } = await deleteRoleRight(role.id, rightId)
-      if (res.meta.status !== 200) return this.$message.error('移除失败')
+      const { data: res } = await deleteRoleRight(role.id, rightId);
+      if (res.meta.status !== 200) return this.$message.error('移除失败');
 
-      this.$message.success('移除成功')
+      this.$message.success('移除成功');
 
-      role.children = res.data
+      role.children = res.data;
     },
     /* 打开分配权限对话框，并获取全部权限列表，设置默认选中的权限，分配权限按钮的回调 */
     async openSetRightsView(role) {
-      const { data: res } = await getRightsList('tree')
+      const { data: res } = await getRightsList('tree');
       if (res.meta.status !== 200)
-        return this.$message.error('获取权限列表失败')
-      this.rightsList = res.data
-      this.editingRoleId = role.id
-      this.getDefaultCheckedKeys(role, this.defaultCheckedKeys)
-      this.setRightsDialogVisible = true
+        return this.$message.error('获取权限列表失败');
+      this.rightsList = res.data;
+      this.editingRoleId = role.id;
+      this.getDefaultCheckedKeys(role, this.defaultCheckedKeys);
+      this.setRightsDialogVisible = true;
     },
     /* 关闭对话框后清空check数据 */
     resetCheckedKey() {
-      this.defaultCheckedKeys = []
+      this.defaultCheckedKeys = [];
     },
 
     /* 递归获取三级菜单的id */
     getDefaultCheckedKeys(node, arr) {
       if (!node.children) {
-        return arr.push(node.id)
+        return arr.push(node.id);
       }
-      node.children.forEach((item) => this.getDefaultCheckedKeys(item, arr))
+      node.children.forEach((item) => this.getDefaultCheckedKeys(item, arr));
     },
     /* 分配权限对话框确认按钮回调 */
     async submitSetRights() {
@@ -297,56 +310,56 @@ export default {
         /* 获取半选中的节点的key 即id  */
         ...this.$refs.rightsTree.getHalfCheckedKeys(),
         /* 获取全选中的节点的key 即id  */
-        ...this.$refs.rightsTree.getCheckedKeys()
-      ]
+        ...this.$refs.rightsTree.getCheckedKeys(),
+      ];
       /* 将数组元素转化为以,分隔的字符串 */
-      const keysStr = keys.join(',')
-      const { data: res } = await setRoleRight(this.editingRoleId, keysStr)
-      if (res.meta.status !== 200) return this.$message.error('分配权限失败')
-      this.getRolesList()
-      this.setRightsDialogVisible = false
-      this.$message.success('分配权限成功')
+      const keysStr = keys.join(',');
+      const { data: res } = await setRoleRight(this.editingRoleId, keysStr);
+      if (res.meta.status !== 200) return this.$message.error('分配权限失败');
+      this.getRolesList();
+      this.setRightsDialogVisible = false;
+      this.$message.success('分配权限成功');
     },
     /* 提交添加用户的回调 */
     submitAddRole() {
       this.$refs['addRoleForm'].validate(async (valid) => {
         if (!valid) {
-          return
+          return;
         } else {
-          const { data: res } = await addRole(this.addRoleForm)
-          if (res.meta.status !== 201) return this.$message.error('添加失败')
-          this.$message.success('添加成功')
-          this.getRolesList()
-          this.addRoleDialogVisible = false
+          const { data: res } = await addRole(this.addRoleForm);
+          if (res.meta.status !== 201) return this.$message.error('添加失败');
+          this.$message.success('添加成功');
+          this.getRolesList();
+          this.addRoleDialogVisible = false;
         }
-      })
+      });
     },
     /* 监听关闭对话框的事件 */
     handleCloseDialog(formName) {
-      this.$refs[formName].resetFields()
+      this.$refs[formName].resetFields();
     },
     /* 编辑角色按钮的回调 */
     async editRole(id) {
-      const { data: res } = await getRoleById(id)
+      const { data: res } = await getRoleById(id);
       if (res.meta.status !== 200)
-        return this.$message.error('获取该角色信息失败')
-      this.$message.success('获取该角色成功')
-      this.editRoleForm = res.data
-      this.editRoleDialogVisible = true
+        return this.$message.error('获取该角色信息失败');
+      this.$message.success('获取该角色成功');
+      this.editRoleForm = res.data;
+      this.editRoleDialogVisible = true;
     },
     /* 提交编辑角色的回调 */
     editRoleSub() {
       this.$refs['editRoleForm'].validate(async (valid) => {
         if (!valid) {
-          return
+          return;
         } else {
-          const { data: res } = await editRole(this.editRoleForm)
-          if (res.meta.status !== 200) return this.$message.error('修改失败')
-          this.$message.success('修改成功')
-          this.getRolesList()
-          this.editRoleDialogVisible = false
+          const { data: res } = await editRole(this.editRoleForm);
+          if (res.meta.status !== 200) return this.$message.error('修改失败');
+          this.$message.success('修改成功');
+          this.getRolesList();
+          this.editRoleDialogVisible = false;
         }
-      })
+      });
     },
     async delRole(id) {
       /* 成功返回confirm 失败返回cancel */
@@ -356,20 +369,20 @@ export default {
         {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
-          type: 'warning'
+          type: 'warning',
         }
-      ).catch((err) => err)
-      if (result !== 'confirm') return this.$message.info('已取消删除')
-      const { data: res } = await deleteRole(id)
-      if (res.meta.status !== 200) return this.$message.error('删除失败')
-      this.$message.success('删除成功')
-      this.getRolesList()
-    }
+      ).catch((err) => err);
+      if (result !== 'confirm') return this.$message.info('已取消删除');
+      const { data: res } = await deleteRole(id);
+      if (res.meta.status !== 200) return this.$message.error('删除失败');
+      this.$message.success('删除成功');
+      this.getRolesList();
+    },
   },
   created() {
-    this.getRolesList()
-  }
-}
+    this.getRolesList();
+  },
+};
 </script>
 
 <style lang="less" scoped>
@@ -382,5 +395,8 @@ export default {
 .vcenter {
   display: flex;
   align-items: center;
+}
+.clearfix {
+  font-size: 22px;
 }
 </style>
